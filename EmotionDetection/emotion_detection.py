@@ -9,7 +9,8 @@ def emotion_detector(text_to_analyse):
         text_to_analyse (str): The text to analyze for sentiment.
 
     Returns:
-        dict: A dictionary containing emotion scores and the dominant emotion.
+        dict: A dictionary containing emotion scores and the dominant emotion. 
+              If status_code = 400, all values will be None.
     """
     # URL of the sentiment analysis service
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
@@ -22,8 +23,20 @@ def emotion_detector(text_to_analyse):
 
     # Sending a POST request to the sentiment analysis API
     response = requests.post(url, json=payload, headers=headers)
+    print(f"response {response} ")
+    # Check the status code of the response
+    if response.status_code == 400:
+        # Return None for all values if the response indicates an error
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
 
-      # Converting the response text to a dictionary
+    # Converting the response text to a dictionary
     data = json.loads(response.text)
 
     # Extracting emotion scores
